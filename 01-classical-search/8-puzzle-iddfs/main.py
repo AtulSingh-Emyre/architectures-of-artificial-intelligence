@@ -5,13 +5,14 @@ from puzzle_env import PuzzleEnvironment
 from iddfs_solver import iddfs
 
 def print_board(board: list[list[int]]) -> None:
-    """Utility to clearly print out your 3x3 layout vertically."""
+    """Utility to clearly print out your custom grid layout vertically."""
     for row in board:
         formatted_row = [str(tile) if tile != 0 else "_" for tile in row]
         print("  ".join(formatted_row))
-    print("-" * 12)
+    print("-" * (len(board[0]) * 4))
 
 def main() -> None:
+    # 4x4 Configuration Matrix (15-Puzzle)
     initial_board = [
         [1, 2, 3, 4],
         [5, 0, 7, 8],
@@ -26,11 +27,16 @@ def main() -> None:
         [13, 14, 15, 0]
     ]
 
+    # Calculate grid size dynamically for clear presentation logging
+    rows = len(initial_board)
+    cols = len(initial_board[0]) if rows > 0 else 0
+    puzzle_name = f"{(rows * cols) - 1}-Puzzle" if rows and cols else "N-Puzzle"
     
-    print("Initializing 8-Puzzle Environment...")
+    print(f"[+] Initializing {puzzle_name} Solver Configuration ({rows}x{cols})...")
     env = PuzzleEnvironment(puzzle_board=initial_board, goal_board=goal_board)
     
-    print("Starting Iterative Deepening Depth-First Search (IDDFS)...")
+    print("[+] Core Algorithm: Iterative Deepening DFS (Uninformed)\n")
+    print("[~] Initiating search sequences...")
     
     # --- START RESOURCE TRACKING ---
     tracemalloc.start()  # Start tracking memory allocations
@@ -46,21 +52,23 @@ def main() -> None:
     execution_time = end_time - start_time
     
     if success:
-        print(f"\n🎉 Goal Reached Successfully!")
-        print(f"⏱️  Execution Time : {execution_time:.6f} seconds")
+        print("\n==================================================")
+        print("                 SEARCH RESULTS                   ")
+        print("==================================================")
+        print("Status:          SUCCESS")
+        print(f"Optimal Depth:   {len(solution_path) - 1} moves")
+        print(f"Execution Time:  {execution_time:.6f} seconds")
+        print(f"Current Memory:  {current_mem / 1024:.2f} KB")
+        print(f"Peak Memory:     {peak_mem / 1024:.2f} KB (Linear Stack Max)")
+        print("==================================================\n")
         
-        # Convert bytes to Kilobytes for scannable metrics
-        print(f"💾 Current Memory  : {current_mem / 1024:.2f} KB")
-        print(f"📈 Peak Memory     : {peak_mem / 1024:.2f} KB")
-        print(f"🧩 Total Steps     : {len(solution_path) - 1}\n")
-        
-        print("--- Execution Path ---")
+        print("--- Chronological Move Execution Path ---")
         for step, state in enumerate(solution_path):
             board_matrix, empty_tile_idx = state
-            print(f"Step {step} | Empty Tile Position: {empty_tile_idx}")
+            print(f"Step {step} | Empty Tile Array Index: {empty_tile_idx}")
             print_board(board_matrix)
     else:
-        print("\n❌ Failed to find a valid solution branch.")
+        print("\n❌ Status: FAILED (Exceeded maximum allowed search limits without matching goal configuration)")
 
 if __name__ == "__main__":
     main()
