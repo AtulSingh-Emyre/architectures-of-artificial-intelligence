@@ -1,18 +1,20 @@
 # SmartEV-Route: Optimal Electric Vehicle Routing using Uniform Cost Search
 
-An implementation of the **Uniform Cost Search (UCS)** algorithm applied to a real-world logistics and sustainability challenge: optimizing the navigation path for Electric Vehicles (EVs) across a weighted topological road network.
+An implementation of the **Uniform Cost Search (UCS)** algorithm applied to a real-world logistics and sustainability challenge: optimizing the navigation path for Electric Vehicles (EVs) across a weighted directed graph.
 
 ## 📌 Problem Statement
 
-Standard navigation systems optimize purely for distance or time. However, Electric Vehicles (EVs) must optimize for **cumulative energy consumption and monetary cost**, where roads have varying elevations, traffic conditions, and toll pricing. 
+Standard navigation systems optimize purely for distance or time. However, Electric Vehicles (EVs) must optimize for **cumulative energy consumption and monetary cost**, where roads have varying elevation, traffic conditions, and infrastructure fees.
 
-In this project, you are tasked with building an AI routing engine for a commercial EV fleet. The vehicle needs to travel from a designated **Origin Hub** to a **Destination Depot** across a complex municipal road network. Each road segment (edge) connecting two intersections (nodes) carries a unique operational cost calculated based on:
+In this project, you are tasked with building an AI routing engine for a commercial EV fleet. The vehicle needs to travel from a designated **Origin Hub** to a **Destination Depot** across a complex mixed-terrain urban network. The cost of traversing any road segment is determined by multiple factors:
+
 1. **Incline & Decline**: Uphill roads draw more battery power; downhill roads trigger regenerative braking (reducing cumulative cost).
 2. **Traffic Density**: Heavy traffic causes idling, which drains auxiliary battery systems.
 3. **Infrastructure Fees**: Certain segments include congestion pricing or tolls.
 
 ### Objective
-Given a directed, weighted graph representing the city's road grid, implement the **Uniform Cost Search** algorithm to find the absolute **lowest-cost path** from the start node to the target node. Your implementation must guarantee optimality while operating within strict computational limits.
+
+Given a directed, weighted graph representing the city's road grid, implement the **Uniform Cost Search** algorithm to find the absolute **lowest-cost path** from the start node to the target node. Your implementation must strictly adhere to the algorithmic constraints defined below to ensure correctness, optimality, and efficiency.
 
 ---
 
@@ -21,14 +23,15 @@ Given a directed, weighted graph representing the city's road grid, implement th
 The network is modeled as a Directed Graph $G = (V, E)$. 
 
 ### Node Representation
+
 Nodes represent intersections, delivery hubs, or charging stations:
 * `S` : Fleet Origin Hub (Start)
 * `G` : Distribution Depot (Goal)
 * `A, B, C, D, E, F` : Intermediate street intersections
 
 ### Edge Cost Matrix
-The edge weights represent the **Total Energy-Cost Units** required to traverse that specific street segment.
 
+The edge weights represent the **Total Energy-Cost Units** required to traverse that specific street segment.
 
 | Source Node | Target Node | Operational Cost ($g(n)$ units) | Street Type / Condition |
 | :--- | :--- | :--- | :--- |
@@ -53,6 +56,7 @@ To ensure this project demonstrates portfolio-grade software engineering, your s
 2. **Graph Search Compliance**: You must implement an explicit **Explored Set (Closed List)** to prevent infinite loops caused by cyclic routes (e.g., $S \rightarrow B \rightarrow A \rightarrow C$).
 3. **Optimal Goal Testing**: The algorithm must **only** check if the goal condition is met when a node is *popped from the priority queue*, not when it is first discovered/generated.
 4. **Efficiency Constraint**: Checking if an unexpanded node already exists in the priority queue frontier must operate in **$O(1)$ time complexity** using an augmented tracking map or a lazy-deletion strategy.
+5. **Path Reconstruction**: Your solution must track and reconstruct the complete path (sequence of nodes) from start to goal, not just the final cost.
 
 ---
 
